@@ -29,14 +29,6 @@ vars.sum + payload]]></ee:set-variable>
 				</ee:variables>
 			</ee:transform>
 		</foreach>
-		<ee:transform doc:name="Transform Message" doc:id="5d23dc30-b45a-4696-9f59-7424b0db88cd" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
-output application/json
----
-vars.sum]]></ee:set-payload>
-			</ee:message>
-		</ee:transform>
 		<logger level="INFO" doc:name="Logger" doc:id="0f08241d-021b-4d95-9606-80e7a06ed547" message="#[vars.sum]"/>
 	</flow>
 </mule>
