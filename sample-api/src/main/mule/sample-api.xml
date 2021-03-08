@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="988e4858-98a4-4e6a-8f9b-4bbda3675983" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<http:listener-config name="HTTP_Listener_config1" doc:name="HTTP Listener config" doc:id="c7f2db5d-45f5-4390-9596-254bcbe8cc36" >
+		<http:listener-connection host="0.0.0.0" port="8080" />
+	</http:listener-config>
+	<http:listener-config name="HTTP_Listener_config2" doc:name="HTTP Listener config" doc:id="e9dfde92-80bd-4a92-999c-0a69f45aa0ca" >
+		<http:listener-connection host="0.0.0.0" port="8082" />
+	</http:listener-config>
+	<flow name="sample-apiFlow" doc:id="44abfc71-2b07-435f-9893-b161d7b9e498" >
+		<http:listener doc:name="Listener" doc:id="51c179a7-6a07-4e0a-8a32-597b8b08277c" config-ref="HTTP_Listener_config2" path="sum"/>
+		<set-variable value="0" doc:name="Set Variable" doc:id="8a0c7ad0-7d45-4b22-9b93-bb8e9e8ca4df" variableName="sum"/>
+		<foreach doc:name="For Each" doc:id="ac1dde5a-e4ab-46f9-9019-1562b2434173" collection="[1,5,10,15,20,25]">
+			<ee:transform doc:name="Transform Message" doc:id="38fab94b-4d56-47ef-89a3-d8540a8c73d3" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="sum" ><![CDATA[%dw 2.0
+output application/java
+---
+vars.sum + payload]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</foreach>
+		<ee:transform doc:name="Transform Message" doc:id="5d23dc30-b45a-4696-9f59-7424b0db88cd" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+vars.sum]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="0f08241d-021b-4d95-9606-80e7a06ed547" message="#[vars.sum]"/>
+	</flow>
+</mule>
